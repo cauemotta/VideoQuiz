@@ -1,0 +1,551 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Video Quiz</title>
+        <!-- Imports -->
+		<link rel="stylesheet" href="themes/lightRed.min.css" />
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.2/jquery.mobile.structure-1.3.2.min.css" />
+		<link href='http://fonts.googleapis.com/css?family=Oleo+Script+Swash+Caps' rel='stylesheet' type='text/css'>
+        <script type="text/javascript" charset="utf-8" src="cordova-1.7.0.js"></script>
+		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+		<script src="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js"></script>
+
+<!-- Styles -->
+<style type="text/css">
+	p.small	{
+	line-height: 0.5;
+	}
+	p.qst	{
+	font-size: 65%;
+	}
+	p.title	{
+	font-family: 'Oleo Script Swash Caps', cursive;
+	font-size: 25px;
+	}
+	input.ui-slider-input {
+		display:none !important;	
+	}
+	.button {
+	display:inline-block;
+	min-width: 50px;
+	width: 80px;
+	padding:5px 10px;
+	}
+	.ui-disabled {
+	opacity:1;	
+	}
+</style>
+    
+<!-- Scripts -->   
+<script type="text/javascript">
+//Global variables declarations
+  	games = 0;
+	resetGame = 0;
+	score = 0;
+	negScore = 0;
+	txtFacts = "";
+	oneGame = 0;
+	
+//Call the setGame function when device is ready
+$( document ).ready(function() {
+    setGame();
+	document.getElementById('btnAns').style.display = 'none';	
+});
+	
+function clearGame()
+{
+//Clears game's parameters to their original settings
+	document.getElementById('name').innerHTML = "";
+	document.getElementById('question').style.display = 'none';
+	document.getElementById('answers').style.display = 'none';
+	document.getElementById('questions').innerHTML = "";
+	document.getElementById('videos').innerHTML = "";
+}
+	
+function resetGame()
+{
+//Resets game objects and parameters
+	document.getElementById('name').innerHTML = "";
+	document.getElementById('answers').style.display = 'block';
+	document.getElementById('questions').innerHTML = "";
+	document.getElementById('videos').innerHTML = "";
+	oneGame=0;
+}
+
+function getAnswers()
+{
+//Displays correct answers and facts on the screen
+	document.getElementById('dispAns').style.display = 'block';
+	clearGame();
+}
+
+function setGame()
+{
+//Resets game if round limit finished
+	if(resetGame !=0)
+	{
+		resetGame = 0;
+		games = 0;
+		$('#load').val(games);
+		$('#load').slider('refresh');
+		score = 0;
+		document.getElementById('correct').innerHTML = 0;
+		negScore = 0;
+		document.getElementById('redcorrect').innerHTML = 0;
+		txtFacts = "";
+		document.getElementById("facts").innerHTML = "";
+		for (var i = 0; i < questionsAsked.length; i++) 
+		{
+			questionsAsked[i]=-1;
+		}
+		setGame();
+	}
+
+//Determines amount of rounds per game set
+	if(games == 5)
+	{
+		clearGame();
+		document.getElementById('btnAns').style.display = 'block';
+		resetGame++;
+	}
+	else
+	{
+		document.getElementById('btnAns').style.display = 'none';
+		document.getElementById('question').style.display = 'block';
+		document.getElementById('answers').style.display = 'block';
+	}
+	document.getElementById('name').innerHTML = "";
+	document.getElementById('dispAns').style.display = 'none';
+	
+//Array of video id and specified start and end time
+	videos = new Array();
+	
+	videos[0] = "gFoq8-Xszjs?start=397&end=400";
+	videos[1] = "VBXKoZQwvDE?start=12&end=31";
+	videos[2] = "ofV_iFBw2YE?";
+	videos[3] = "MnWpWsuXnAs?start=10&end=30";
+	videos[4] = "OeT90DocZ-4?start=20&end=26";
+	videos[5] = "8bXtvO63I0w?start=05&end=13";
+	videos[6] = "8bXtvO63I0w?start=25&end=35";
+	videos[7] = "8bXtvO63I0w?start=89&end=96";
+	videos[8] = "8bXtvO63I0w?start=139&end=153";
+	videos[9] = "uT1ajLbeR7U?start=80&end=105";
+	videos[10] = "b1qAIK9pfTA?start=08&end=25";
+	videos[11] = "epjrWjo9ZMY?start=05&end=20";
+	videos[12] = "9Zlzin6PIo8?start=45&end=66";
+	videos[13] = "9Zlzin6PIo8?start=120&end=132";
+	videos[14] = "w_-pf-l_mZc?start=65&end=74";
+	videos[15] = "w_-pf-l_mZc?start=235&end=249";
+	videos[16] = "w_-pf-l_mZc?start=335&end=342";
+	videos[17] = "KiRLCLbEkeg?start=13&end=53";
+	videos[18] = "gFoq8-Xszjs?start=181&end=184";
+	videos[19] = "gFoq8-Xszjs?start=240&end=246";
+
+//Array of question titles to be displayed
+	questions = new Array();
+	
+	questions[0] = "Distracted guy";
+	questions[1] = "Pool guy.";
+	questions[2] = "Wall guy.";
+	questions[3] = "Flying chair guy.";
+	questions[4] = "Screaming guy.";
+	questions[5] = "Gun fire guy.";
+	questions[6] = "Deer guy.";
+	questions[7] = "Ghost guy.";
+	questions[8] = "Head guy.";
+	questions[9] = "Floating guy.";
+	questions[10] = "Security guy.";
+	questions[11] = "Oops girl.";
+	questions[12] = "Punch guy.";
+	questions[13] = "Towel guy.";
+	questions[14] = "360 guy.";
+	questions[15] = "Folding guy.";
+	questions[16] = "Training session.";
+	questions[17] = "Little girl.";
+	questions[18] = "Rotating guy.";
+	questions[19] = "Door guy.";
+
+//Generate random questions and prevent them from repeating in the same game set
+	questionsAsked = new Array(4);
+
+		while(oneGame==0)
+		{
+			num = Math.floor(Math.random()*(questions.length));
+			for (var i = 0; i < questionsAsked.length; i++) 
+			{
+				if (questionsAsked[i]==num)
+				{
+					break;
+				}
+				else
+				{
+					oneGame++;
+				}
+			}
+		}
+
+	questionsAsked[games] = num;
+
+
+//String that inserts the question title in the page
+	document.getElementById('questions').innerHTML = questions[num];
+//String that inserts the video in the page, using it's unique id from the video array
+	document.getElementById('videos').innerHTML = "<iframe id='ytplayer' type='text/html' width='100%' height='280' src='https://www.youtube.com/embed/"+videos[num]+"&controls=0&wmode=opaque&rel=0&wmode=transparent&modestbranding=1&autoplay=1&rel=0&showinfo=0&autohide=1&iv_load_policy=3' frameborder='0' allowfullscreen>";
+	
+//Array of answers to choose from
+	answers = new Array();
+	
+	answers[0] = "Classy";
+	answers[1] = "Stand-up comedy";
+	answers[2] = "I believe I can";
+	answers[3] = "I shouldn't have";
+	answers[4] = "Blacksmith";
+	answers[5] = "Shake it, babe";
+	answers[6] = "Retarded reaction";
+	answers[7] = "Express conversion";
+	answers[8] = "Love";
+	answers[9] = "Friendship";
+	answers[10] = "Nope";
+	answers[11] = "Chemistry";
+	answers[12] = "Yes it is";
+	answers[13] = "Firm chair";
+	answers[14] = "No worries";
+	answers[15] = "Consciousness";
+	answers[16] = "Managers";
+	answers[17] = "New pants";
+	answers[18] = "Following instructions";
+	answers[19] = "Always learning";
+	
+//Array of facts to be displayed after user get the answers
+	facts = new Array();
+	
+	facts[0] = "Notice that distracted guy never loses his class. Even after a good wall head-bang.";
+	facts[1] = "That guy became the impersonification of stand-up comedy. Or do you think he could sit or lie down right after the incident?";
+	facts[2] = "This guy actually had the strongest believe he could go through walls.";
+	facts[3] = "'I shouldn't have gotten too drunk beside the pool.' was the first think he thought when he woke up in the middle of the air.";
+	facts[4] = "This guy could cut an iron bar with his butt cheeks when he woke up.";
+	facts[5] = "If you get a chance, watch how this guy shakes in slow motion.";
+	facts[6] = "Deer guy definitely took too long to realize what happenned.";
+	facts[7] = "The fastest way to embrace christianism.";
+	facts[8] = "Love is still there even after he's given up on his own body.";
+	facts[9] = "Ah yes... nothing like really good friends to set you free.";
+	facts[10] = "Just naked. Not everything needs a reason to be.";
+	facts[11] = "They all felt it. Didn't you?";
+	facts[12] = "It is extremely funny, actually.";
+	facts[13] = "It bent but did not break. Even after towel guy's reaction. That a chair!";
+	facts[14] = "Why worrying? He's got everything under control.";
+	facts[15] = "With so many over loaded trains, this guy folds to give some extra space to other passengers.";
+	facts[16] = "They've actually managed to drop the guy.There were five of them.";
+	facts[17] = "First thing she did after she left the elevator was buying new pants.It was the right thing to do.";
+	facts[18] = "He was too stressed and did what they told him... headed to the beach.";
+	facts[19] = "That is one more way he found out to be uneffective to open a door.";
+
+//Generate random answer buttons
+	var num2 = Math.floor(Math.random()*4);
+	if(num2==1)
+	{
+		while(oneGame<5)
+		{
+			$("#ans1").html(answers[num]);
+			do
+			{
+			var num3 = Math.floor(Math.random()*(answers.length));
+			$("#ans2").html(answers[num3]);
+			}while(num3==num);
+			
+			do
+			{
+			var num4 = Math.floor(Math.random()*(answers.length));
+			$("#ans3").html(answers[num4]);
+			}while(num4==num||num4==num3);
+			
+			do
+			{
+			var num5 = Math.floor(Math.random()*(answers.length));
+			$("#ans4").html(answers[num5]);
+			}while(num5==num||num5==num3||num5==num4);
+			correct = 1;
+			oneGame++
+		}
+	}
+	else if(num2==2)
+	{
+		while(oneGame<5)
+		{
+			$("#ans3").html(answers[num]);
+			do
+			{
+			var num3 = Math.floor(Math.random()*(answers.length));
+			$("#ans2").html(answers[num3]);
+			}while(num3==num);
+			
+			do
+			{
+			var num4 = Math.floor(Math.random()*(answers.length));
+			$("#ans1").html(answers[num4]);
+			}while(num4==num||num4==num3);
+			
+			do
+			{
+			var num5 = Math.floor(Math.random()*(answers.length));
+			$("#ans4").html(answers[num5]);
+			}while(num5==num||num5==num3||num5==num4);
+			correct = 3;
+			oneGame++
+		}
+	}
+	else if(num2==3)
+	{
+		while(oneGame<5)
+		{
+			$("#ans4").html(answers[num]);
+			do
+			{
+			var num3 = Math.floor(Math.random()*(answers.length));
+			$("#ans2").html(answers[num3]);
+			}while(num3==num);
+			
+			do
+			{
+			var num4 = Math.floor(Math.random()*(answers.length));
+			$("#ans3").html(answers[num4]);
+			}while(num4==num||num4==num3);
+			
+			do
+			{
+			var num5 = Math.floor(Math.random()*(answers.length));
+			$("#ans1").html(answers[num5]);
+			}while(num5==num||num5==num3||num5==num4);
+			correct = 4;
+			oneGame++
+		}
+	}
+	else
+	{
+		while(oneGame<5)
+		{
+			$("#ans2").html(answers[num]);
+			do
+			{
+			var num3 = Math.floor(Math.random()*(answers.length));
+			$("#ans1").html(answers[num3]);
+			}while(num3==num);
+			
+			do
+			{
+			var num4 = Math.floor(Math.random()*(answers.length));
+			$("#ans3").html(answers[num4]);
+			}while(num4==num||num4==num3);
+			
+			do
+			{
+			var num5 = Math.floor(Math.random()*(answers.length));
+			$("#ans4").html(answers[num5]);
+			}while(num5==num||num5==num3||num5==num4);
+			correct = 2;
+			oneGame++
+		}
+	}
+}
+
+//Functions to be called and determine whether the answer was correct or not and take actions for each case
+function displayResult1()
+{
+	oneGame=0;
+	if (correct == 1)
+	{
+		txtFacts = "<div data-role='collapsible'><h1>" + questions[num] + "</h1><p>" + facts[num] + "</p></div>";
+		$( "#facts" ).append($(txtFacts).collapsible());
+		score++;
+		games++;
+		document.getElementById('correct').innerHTML = score;
+		setGame();
+	}
+	else
+	{
+		negScore++;
+		games++;
+		document.getElementById('redcorrect').innerHTML = negScore;
+		setGame();
+	}
+	$('#load').val(games);
+	$('#load').slider('refresh');
+}
+
+function displayResult2()
+{
+	oneGame=0;
+	if (correct == 2)
+	{
+		txtFacts = "<div data-role='collapsible'><h1>" + questions[num] + "</h1><p>" + facts[num] + "</p></div>";
+		$( "#facts" ).append($(txtFacts).collapsible());
+		score++;
+		games++;
+		document.getElementById('load').value = games;
+		document.getElementById('correct').innerHTML = score;
+		setGame();
+	}
+	else
+	{
+		negScore++;
+		games++;
+		document.getElementById('redcorrect').innerHTML = negScore;
+		setGame();
+	}
+	$('#load').val(games);
+	$('#load').slider('refresh');
+}
+
+function displayResult3()
+{
+	oneGame=0;
+	if (correct == 3)
+	{
+		txtFacts = "<div data-role='collapsible'><h1>" + questions[num] + "</h1><p>" + facts[num] + "</p></div>";
+		$( "#facts" ).append($(txtFacts).collapsible());
+		score++;
+		games++;
+		document.getElementById('load').value = games;
+		document.getElementById('correct').innerHTML = score;
+		setGame();
+	}
+	else
+	{
+		negScore++;
+		games++;
+		document.getElementById('redcorrect').innerHTML = negScore;
+		setGame();
+	}
+	$('#load').val(games);
+	$('#load').slider('refresh');
+}
+
+function displayResult4()
+{
+	oneGame=0;
+	if (correct == 4)
+	{
+		txtFacts = "<div data-role='collapsible'><h1>" + questions[num] + "</h1><p>" + facts[num] + "</p></div>";
+		$( "#facts" ).append($(txtFacts).collapsible());
+		score++;
+		games++;
+		document.getElementById('load').value = games;
+		document.getElementById('correct').innerHTML = score;
+		setGame();
+	}
+	else
+	{
+		negScore++;
+		games++;
+		document.getElementById('redcorrect').innerHTML = negScore;
+		setGame();
+	}
+	$('#load').val(games);
+	$('#load').slider('refresh');
+}
+
+</script> 
+	</head>
+	<body> 
+<div data-role="page" id="home" data-theme="a">
+	<div data-role="header">
+    <p class="title" align="center">Video Quiz</p>
+		<div data-role="navbar" data-iconpos="bottom" >
+		<ul>
+			<li><a data-icon="info" href="#about">About</a></li>
+			<li><a class="ui-btn-active ui-state-persist" data-icon="refresh" href="#" onClick='setGame();'>Play</a></li>
+			<li><a data-icon="delete" href="#">Quit</a></li>
+		</ul>
+	</div><!-- /navbar -->
+	</div>
+    	<div data-role="content">
+        <div id="question">
+	  <table width="100%" border="0" align="center">
+	    <tr>
+	      <td colspan="3" align="center"><div style="position: relative; left: 0; top: 0;"><div id="videos" style="width:100%; height:280px; overflow:hidden!important; text-align:center;"></div><p class="qst" id="questions"></p><p>Which of the following options relate to the character in the video?</p></td>
+        </tr>
+        <tr>
+	      <td colspan="3" align="center"><p id="name"></p></td>
+        </tr>
+      </table>
+      </div>
+      <div id="answers">
+      <table border="0" align="center">
+     	<tr>
+	      <td align="center"><button style="width:500px;height:50px;" type='button' onClick="displayResult1();"><p id='ans1'>Answers!</p></button></td>
+        </tr>
+        <tr>
+	      <td align="center"><button type='button' onClick="displayResult2();"><p id='ans2'>Answers!</p></button></td>
+        </tr>
+	    <tr>
+	      <td align="center"><button type='button' onClick="displayResult3();"><p id='ans3'>Answers!</p></button></td>
+        </tr>
+        <tr>
+	      <td align="center"><button type='button' onClick="displayResult4();"><p id='ans4'>Answers!</p></button></td>
+        </tr>
+	  </table>
+      </div>
+      <div id="btnAns" style="display: block">
+      <input type="button" id="getAns" value="Get Answers!" onClick="getAnswers();" />
+      </div>
+      <div id="dispAns" style="display: block">
+      <table border="0" align="center">
+      <tr height="1px">
+            <td width="15%" align="left">
+            	<p align="left"><strong>Mistakes: <span id="redcorrect"></span></strong></p>
+            </td>
+            <td width="10%" align="center">
+            	<p>&nbsp;</p>
+            </td>
+            <td width="650" align="center">
+            	<p>You only get to see the answers you got right!</p>
+            </td>
+            <td width="10%" align="center">
+            	<p>&nbsp;</p>
+            </td>
+            <td width="15%" align="right">
+                <p align="right"><strong>Hits: <span id="correct"></span></strong></p>
+            </td>
+        </tr>
+        <tr height="1px">
+            <td colspan="5" align="center">
+               	<span id="facts"></span>
+            </td>
+        </tr>
+        </table>
+      </div>
+	</div>
+	<div data-role="footer">		
+	<input type="range" id="load" disabled="disabled" value="0" min="0" max="5" />
+</div><!-- /footer -->
+</div>
+
+<div data-role="page" id="about" data-add-back-btn="true">
+	<div data-role="header">
+		<h1>About</h1>
+	</div>
+	<div data-role="content">	
+		About this app.	
+	</div>
+	<div data-role="footer">
+		<h4>by Caue Motta</h4>
+	</div>
+</div>
+
+<div data-role="page" id="quit" data-add-back-btn="true">
+	<div data-role="header">
+		<h1>About</h1>
+	</div>
+	<div data-role="content">	
+		About this app.	
+	</div>
+	<div data-role="footer">
+		<h4>by Caue Motta</h4>
+	</div>
+</div>
+
+</body>
+</html>
